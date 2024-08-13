@@ -56,7 +56,7 @@ function Quiz(){
     }
     return(
         <div className="container">
-            <h1>Quiz App</h1>
+            <h1>Quiz App Version 2</h1>
             <hr />
             {result?<></>:<><h2>{index + 1}.{question.question}</h2>
             <ul>
