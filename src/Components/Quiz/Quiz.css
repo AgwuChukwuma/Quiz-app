@@ -53,12 +53,20 @@
     background: #ffebeb;
     background-color: #ff4a4a;
 }
-li:hover{
-    background-color: rgba(128, 128, 128, 0.66);
-}
 .correct{
     background-color: #00f3969b;
 }
 .wrong{
     background-color: #ff4a4aac;
+}
+button:disabled {
+    background-color: #c0c0c0;
+    cursor: not-allowed;
+}
+
+button:hover:not(:disabled) {
+    background-color: #563f9ae3;
+}
+li.selected{
+    background-color: #e0f7fa;
 }
