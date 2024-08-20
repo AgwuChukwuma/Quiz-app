@@ -7,7 +7,7 @@ function Quiz(){
     let [question, setQuestion] = useState(questions[index]);
     let [score, setScore] = useState(0);
     let [result, setResult] = useState(false);
-    let [selectedAnswer, setSelectedAnswer] = useState(null);
+    let [selectedAnswer, setSelectedAnswer] = useState(new Array(data.length).fill(null));
     let [answered, setAnswered] = useState(false);
 
     let Option1 = useRef(null);
@@ -20,7 +20,15 @@ function Quiz(){
     useEffect(() => {
         setQuestion(questions[index]);
         resetOptions();
+        highlightSelectedAnswer();
     }, [index]);
+
+    const highlightSelectedAnswer = () => {
+        const selected = selectedAnswer[index];
+        if (selected !== null) {
+            option_array[selected - 1].current.classList.add("selected");
+        }
+    };
 
     const checkAns = (e, ans) => {
         option_array.forEach((option) => {
@@ -29,16 +37,18 @@ function Quiz(){
             option.current.classList.remove("wrong")
         });
         e.target.classList.add("selected");
-        setSelectedAnswer(ans);
+        const updatedSelectedAnswer =[...selectedAnswer]
+        updatedSelectedAnswer[index] = ans;
+        setSelectedAnswer(updatedSelectedAnswer);
         setAnswered(true);
     }
 
     const submitAnswer = () => {            
-          if (selectedAnswer===question.ans) {
-             option_array[selectedAnswer - 1].current.classList.add("correct"); 
+          if (selectedAnswer[index]===question.ans) {
+             option_array[selectedAnswer[index] - 1].current.classList.add("correct"); 
             setScore(prev => prev + 1);
           } else {
-            option_array[selectedAnswer - 1].current.classList.add("wrong");
+            option_array[selectedAnswer[index] - 1].current.classList.add("wrong");
             option_array[question.ans-1].current.classList.add("correct");
           }
         };
@@ -51,7 +61,7 @@ function Quiz(){
                 setResult(true);
             }
             setAnswered(false);
-            setSelectedAnswer(null);
+
         }
     };
 
@@ -59,7 +69,6 @@ function Quiz(){
         if (index > 0) {
             setIndex(prev => prev - 1);
             setQuestion(data[index - 1]);
-            setSelectedAnswer(null);
             setAnswered(false);
             resetOptions();
         }
@@ -79,7 +88,7 @@ function Quiz(){
         setScore(0);
         setResult(false);
         setAnswered(false);
-        setSelectedAnswer(null);
+        setSelectedAnswer(new Array(data.length).fill(null));
         resetOptions();
     }
     return(
