@@ -9,6 +9,7 @@ function Quiz(){
     let [result, setResult] = useState(false);
     let [selectedAnswer, setSelectedAnswer] = useState(new Array(data.length).fill(null));
     let [answered, setAnswered] = useState(false);
+    let [correctAnswers, setcorrectAnswers] = useState(new Array(data.length).fill(null));
 
     let Option1 = useRef(null);
     let Option2 = useRef(null);
@@ -37,16 +38,27 @@ function Quiz(){
             option.current.classList.remove("wrong")
         });
         e.target.classList.add("selected");
+
         const updatedSelectedAnswer =[...selectedAnswer]
         updatedSelectedAnswer[index] = ans;
+
         setSelectedAnswer(updatedSelectedAnswer);
         setAnswered(true);
     }
 
     const submitAnswer = () => {            
-          if (selectedAnswer[index]===question.ans) {
+          const wasCorrect = selectedAnswer[index] === question.ans;
+          const wasPreviouslyCorrect = correctAnswers[index];
+        
+          if(wasCorrect){
+            if(!wasPreviouslyCorrect){
+                setScore(prev => prev + 1);
+            const updatedCorrectAnswers = [...correctAnswers];
+            updatedCorrectAnswers[index] = true;
+            setcorrectAnswers(updatedCorrectAnswers);
+            }
+          
              option_array[selectedAnswer[index] - 1].current.classList.add("correct"); 
-            setScore(prev => prev + 1);
           } else {
             option_array[selectedAnswer[index] - 1].current.classList.add("wrong");
             option_array[question.ans-1].current.classList.add("correct");
@@ -90,6 +102,8 @@ function Quiz(){
         setAnswered(false);
         setSelectedAnswer(new Array(data.length).fill(null));
         resetOptions();
+
+        
     }
     return(
         <div className="container">
@@ -106,7 +120,7 @@ function Quiz(){
             <button onClick={next}>{index === data.length - 1 ? 'Finish' : 'Next'}</button>
             <div className="index">{index + 1} of {data.length} questions</div></>}
             
-            {result?<><h2>You Scored {score} out of {data.length}</h2>
+            {result?<><h2>You Scored {score} out of {data.length}</h2>  
             <button onClick={reset}>Reset</button></>:<></>}
             
         </div>
