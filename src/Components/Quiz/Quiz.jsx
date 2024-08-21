@@ -9,7 +9,9 @@ function Quiz(){
     let [result, setResult] = useState(false);
     let [selectedAnswer, setSelectedAnswer] = useState(new Array(data.length).fill(null));
     let [answered, setAnswered] = useState(false);
-    let [correctAnswers, setcorrectAnswers] = useState(new Array(data.length).fill(null));
+    let [correctAnswers, setCorrectAnswers] = useState(new Array(data.length).fill(null));
+    let [timeLeft, setTimeLeft] = useState(5);
+    let [quizEnded, setQuizEnded] = useState (false);
 
     let Option1 = useRef(null);
     let Option2 = useRef(null);
@@ -23,6 +25,19 @@ function Quiz(){
         resetOptions();
         highlightSelectedAnswer();
     }, [index]);
+
+    useEffect(() => {
+        console.log(timeLeft, quizEnded)
+        if(timeLeft === 0){
+            setQuizEnded(true);
+            setResult(true);
+            return;
+        }
+        const timer = setInterval(() => {
+            setTimeLeft(prev => prev - 1);
+        }, 1000);
+        return () => clearInterval(timer);
+    }, [timeLeft, quizEnded]);
 
     const highlightSelectedAnswer = () => {
         const selected = selectedAnswer[index];
@@ -55,7 +70,7 @@ function Quiz(){
                 setScore(prev => prev + 1);
             const updatedCorrectAnswers = [...correctAnswers];
             updatedCorrectAnswers[index] = true;
-            setcorrectAnswers(updatedCorrectAnswers);
+            setCorrectAnswers(updatedCorrectAnswers);
             }
           
              option_array[selectedAnswer[index] - 1].current.classList.add("correct"); 
@@ -71,6 +86,7 @@ function Quiz(){
                 setIndex(prev => prev + 1);
             }else{
                 setResult(true);
+                setQuizEnded(true);
             }
             setAnswered(false);
 
@@ -88,9 +104,9 @@ function Quiz(){
 
     const resetOptions = () => {
         option_array.forEach(option => {
-            option.current.classList.remove("wrong");
-            option.current.classList.remove("correct");
-            option.current.classList.remove("selected");
+            option.current?.classList.remove("wrong");
+            option.current?.classList.remove("correct");
+            option.current?.classList.remove("selected");
         });
     };
 
@@ -102,12 +118,13 @@ function Quiz(){
         setAnswered(false);
         setSelectedAnswer(new Array(data.length).fill(null));
         resetOptions();
-
-        
+        setTimeLeft(5)
+        setQuizEnded(false);
     }
     return(
         <div className="container">
             <h1>Quiz App</h1>
+            <div><h2>Time Left: {timeLeft} Seconds</h2></div>
             <hr />
             {result?<></>:<><h2>{index + 1}.{question.question}</h2>
             <ul>
