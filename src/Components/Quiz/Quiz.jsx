@@ -10,7 +10,7 @@ function Quiz(){
     let [selectedAnswer, setSelectedAnswer] = useState(new Array(data.length).fill(null));
     let [answered, setAnswered] = useState(false);
     let [correctAnswers, setCorrectAnswers] = useState(new Array(data.length).fill(null));
-    let [timeLeft, setTimeLeft] = useState(60);
+    let [timeLeft, setTimeLeft] = useState(30);
     let [quizEnded, setQuizEnded] = useState (false);
 
     let Option1 = useRef(null);
